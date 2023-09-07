@@ -1,12 +1,9 @@
-$APIKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXx"
+$APIKey = "XXXXXXXXXx"
 $headers = @{
 "Content-Type" = "application/json"
 "Accept" = "application/json"
 "X-Cisco-Meraki-API-Key" = $APIKey
 }
-
-
-
 
 $orgs = Invoke-RestMethod -Method Get -Uri "https://api.meraki.com/api/v1/organizations" -Headers $Headers
 $networks = @()
@@ -18,7 +15,7 @@ foreach ($org in $orgs){
 $clients = @()
 $devices = @()
 foreach ($network in $networks){
-  Write-Host $network.name
+  #Write-Host $network.name
   $x = Invoke-RestMethod -Method Get -Uri "https://api.meraki.com/api/v1/networks/$($network.id)/clients" -Headers $Headers
   $clients += $x
 
@@ -36,5 +33,5 @@ function get-name{
 
 
 
-$clients | select recentDeviceSerial,mac,description,ip,ssid,vlan,switchport,user,firstSeen,lastSeen, @{Name = 'NetName'; Expression = {get-name($_.recentDeviceSerial)}} | sort User | Out-GridView
+$clients | select mac,description,ip,ssid,vlan,switchport,user,firstSeen,lastSeen,status, @{Name = 'NetName'; Expression = {get-name($_.recentDeviceSerial)}} | sort User | where {$_.User -ne $null} | where {$_.Status -Like "Online"}| Out-GridView
 
