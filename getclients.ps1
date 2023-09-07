@@ -16,7 +16,7 @@ $clients = @()
 $devices = @()
 foreach ($network in $networks){
   #Write-Host $network.name
-  $x = Invoke-RestMethod -Method Get -Uri "https://api.meraki.com/api/v1/networks/$($network.id)/clients" -Headers $Headers
+  $x = Invoke-RestMethod -Method Get -Uri "https://api.meraki.com/api/v1/networks/$($network.id)/clients?perPage=1000" -Headers $Headers
   $clients += $x
 
   $y = Invoke-RestMethod -Method Get -Uri "https://api.meraki.com/api/v1/networks/$($network.id)/devices" -Headers $Headers
